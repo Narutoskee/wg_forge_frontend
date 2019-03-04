@@ -30,9 +30,6 @@ function starConverter(str) {
         }
 }
 
-
-
-
 let tableLoad= '<thead>';
 tableLoad +='<tr>';
 tableLoad +='<th>Transaction ID</th>';
@@ -53,6 +50,9 @@ for(let i = 0; i< orders.length;i++){
     const createdAt= orders[i].created_at;
     const totalPay= orders[i].total;
     const cardNumber= orders[i].card_number;
+    const cardType = orders[i].card_type;
+    const orderCountry = orders[i].order_country;
+    const orderIp = orders[i].order_ip;
 
     tableLoad +='<tr id="order_'+orderId+'">';
     tableLoad +="<td>"+transactionId+"</td>";
@@ -60,6 +60,8 @@ for(let i = 0; i< orders.length;i++){
     tableLoad +='<td>'+timeConverter(createdAt)+'</td>';
     tableLoad +='<td>$'+totalPay+'</td>';
     tableLoad +='<td>'+starConverter(cardNumber)+'</td>';
+    tableLoad +='<td>'+cardType+'</td>';
+    tableLoad +='<td>'+orderCountry +' ('+orderIp+')</td>';
 
 
     tableLoad +='</tr>';
