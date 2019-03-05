@@ -1,10 +1,91 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>WG Forge Test</title>
+    <style>
+        th {
+            cursor: pointer;
+        }
+
+        th:hover {
+            background: yellow;
+        }
+    </style>
+    <script>
+        function change(idName) {
+            if (document.getElementById(idName).style.display === 'none') {
+                document.getElementById(idName).style.display = 'block';
+            } else {
+                document.getElementById(idName).style.display = 'none';
+            }
+            return false;
+        }
+
+        // сортировка таблицы
+        // использовать делегирование!
+        // должно быть масштабируемо:
+        // код работает без изменений при добавлении новых столбцов и строк
+        window.onload = function() {
+
+            let grid = document.getElementById('grid');
+            grid.onclick = function (e) {
+                if (e.target.tagName.toLowerCase() !== 'th') return;
+
+                // Если TH -- сортируем
+                sortGrid(e.target.cellIndex, e.target.getAttribute('data-type'));
+            };
+            function sortGrid(colNum, type) {
+                let tbody = grid.getElementsByTagName('tbody')[0];
+                // Составить массив из TR
+                let rowsArray = [].slice.call(tbody.rows);
+                // определить функцию сравнения, в зависимости от типа
+                let compare;
+                switch (type) {
+                    case 'number':
+                        compare = function (rowA, rowB) {
+                            var a = parseFloat(rowA.cells[colNum].innerHTML.replace('$', ''));
+                            var b = parseFloat(rowB.cells[colNum].innerHTML.replace('$', ''));
+                            return a - b;
+                        };
+                        break;
+                    case 'string':
+                        compare = function (rowA, rowB) {
+                            var a = rowA.cells[colNum].innerHTML;
+                            var b = rowB.cells[colNum].innerHTML;
+                            return a.localeCompare(b);
+                        };
+                        break;
+                    case 'name':
+                        compare = function (rowA, rowB) {
+                            var a = rowA.cells[colNum].getAttribute('data-name').replace('Mr. ', '').replace('Ms. ', '');
+                            var b = rowB.cells[colNum].getAttribute('data-name').replace('Mr. ', '').replace('Ms. ', '');
+                            return a.localeCompare(b);
+                        };
+                        break;
+                }
+
+                // сортировать
+                rowsArray.sort(compare);
+                // Убрать tbody из большого DOM документа для лучшей производительности
+                grid.removeChild(tbody);
+                // добавить результат в нужном порядке в TBODY
+                // они автоматически будут убраны со старых мест и вставлены в правильном порядке
+                for (let i = 0; i < rowsArray.length; i++) {
+                    tbody.appendChild(rowsArray[i]);
+                }
+                grid.appendChild(tbody);
+
+            }
+        }
+
+
+    </script>
 </head>
 <body>
-    <div id="app"></div>
+<div id="app"></div>
+
+
 </body>
 </html>
