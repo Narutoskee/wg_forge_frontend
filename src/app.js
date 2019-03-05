@@ -77,7 +77,7 @@ export default (function () {
         let bdate = birthday.getDate();
         let bmonth = birthday.getMonth();
         let byear = birthday.getFullYear();
-        console.log('<p>'+(company?+'Company:'+ '<a href="http://awesome.website" target="_blank">' +  company.title+ '</a>':'')+'</p>');
+        let beIndustry = (company?'Industry:'+ company.industry : null);
         if (user) {
             tableLoad += '<tr id="order_' + orderId + '">';
             tableLoad += "<td>" + transactionId + "</td>";
@@ -85,10 +85,9 @@ export default (function () {
                 '<a onclick="return change(\'' + clickId + '\')" href="#" >' + (user.gender === "Male" ? "Mr. " : "Ms. ") + user.first_name + ' ' + user.last_name + '</a>' +
                 '<div style="display:none" id="' + clickId + '" class="user-details"> ' +
                 '<p>Birthday: ' + pad(bmonth + 1) + "/" + pad(bdate) + "/" + byear + '</p>' +
-                '<p><img src="' + user.avatar + '" width="100px"></p>' +
-                // '<p>Company:  <a href="http://awesome.website" target="_blank">' +  (company?company.title:'')+ '</a></p>' +
-                '<p>'+(company?'Company: <a href="http://awesome.website" target="_blank">' +  company.title+ '</a>':'')+'</p>' +
-                '<p>Industry: Apparel / Consumer Services</p>' +
+                '<p><img alt="" src="' + user.avatar + '" width="100px"></p>' +
+                '<p>'+(company?'Company: <a href="'+company.url+'" target="_blank">' +  company.title+ '</a>':'')+'</p>' +
+                '<p>' +beIndustry+ '</p>' +
                 '</div></td>';
             tableLoad += '<td>' + timeConverter(createdAt) + '</td>';
             tableLoad += '<td>$' + totalPay + '</td>';
