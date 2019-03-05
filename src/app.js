@@ -33,6 +33,26 @@ function starConverter(str) {
 function pad(n) {
     return n < 10 ? '0' + n : n;
 }
+function median(data) {
+    var count = 0;
+    data.sort((a, b) => a - b);
+    do {
+        data.pop();
+        data.shift();
+    } while (data.length > 2)
+    {
+
+        if (data.length === 2) {
+            for (var j = 0; j < data.length; j++) {
+                count = (data[0] + data[1]);
+                return count / 2;
+            }
+        }
+    }
+    return data[0];
+}
+
+
 
 export default (function () {
     let tableLoad= '<table id="grid" class="table"><thead>';
@@ -58,7 +78,12 @@ export default (function () {
     for(let i = 0; i < companies.length; i++) {
         companyById[companies[i].id] = companies[i];
     }
-    //console.log(companyById);
+    // make an associative array of users to search by ID
+    let ordersById = {};
+    let sum=0;
+    for(let i = 0; i < orders.length; i++) {
+        ordersById[orders[i].total] = orders[i];
+     }
 
     for(let i = 0; i< orders.length;i++){
         const orderId= Number(orders[i].id);
@@ -78,6 +103,7 @@ export default (function () {
         let bmonth = birthday.getMonth();
         let byear = birthday.getFullYear();
         let beIndustry = (company?'Industry:'+ company.industry : null);
+        sum+=totalPay;
         if (user) {
             tableLoad += '<tr id="order_' + orderId + '">';
             tableLoad += "<td>" + transactionId + "</td>";
@@ -95,8 +121,39 @@ export default (function () {
             tableLoad += '<td>' + cardType + '</td>';
             tableLoad += '<td>' + orderCountry + ' (' + orderIp + ')</td>';
             tableLoad += '</tr>';
+
         }
     }
+    tableLoad +='<tr>' +
+        '<td>Orders Count</td>' +
+        '<td>'+orders.length+'</td>' +
+        '<td colspan="5">&nbsp;</td>' +
+        '</tr>';
+    tableLoad +='<tr>' +
+        '<td>Orders Total</td>' +
+        '<td>$'+sum+'</td>' +
+        '<td colspan="5">&nbsp;</td>' +
+        '</tr>';
+    tableLoad +='<tr>' +
+        '<td>Median Value</td>' +
+        '<td></td>' +
+        '<td colspan="5">&nbsp;</td>' +
+        '</tr>';
+    tableLoad +='<tr>' +
+        '<td>Average Check</td>' +
+        '<td>2</td>' +
+        '<td colspan="5">&nbsp;</td>' +
+        '</tr>';
+    tableLoad +='<tr>' +
+        '<td>Average Check (Female)</td>' +
+        '<td>2</td>' +
+        '<td colspan="5">&nbsp;</td>' +
+        '</tr>';
+    tableLoad +='<tr>' +
+        '<td>Average Check (Male)</td>' +
+        '<td>2</td>' +
+        '<td colspan="5">&nbsp;</td>' +
+        '</tr>';
     tableLoad +='</tbody>';
     tableLoad +='</table>';
     document.getElementById('app').innerHTML = "" + tableLoad + " <br>";
