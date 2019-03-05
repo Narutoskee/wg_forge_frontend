@@ -13,7 +13,7 @@ git clone https://github.com/<username>/wg_forge_frontend.git
 ```
  - Перейдите в корневую директорию проекта и установите зависимости  командой (подробно об npm и зависимостях можно узнать на сайте: https://docs.npmjs.com/):
 ```sh
-npm install
+``npm install``
 ```
  - Для запуска проекта выполните команду:
 ```sh

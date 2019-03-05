@@ -1,7 +1,10 @@
-// this is an example of improting data from JSON
-import orders from '../data/orders.json';
-// console.log(orders);
-// console.log(orders[0].id+" "+ orders[0].transaction_id);
+import orders from '../data/orders.json'; //  import orders data from json
+import users from '../data/users.json'; // import users data from json
+
+
+
+
+
 function timeConverter(UNIX_timestamp){
     let a = new Date(UNIX_timestamp * 1000);
     let year = a.getFullYear();
@@ -30,7 +33,17 @@ function starConverter(str) {
         }
 }
 
-let tableLoad= '<thead>';
+function change(idName) {
+    if(document.getElementById(idName).style.display ==='none') {
+        let div = document.getElementById(idName).style.display = 'block';
+    } else {
+        document.getElementById(idName).style.display = 'none';
+    }
+    return false;
+}
+
+export default (function () {
+let tableLoad= '<table class="table"><thead>';
 tableLoad +='<tr>';
 tableLoad +='<th>Transaction ID</th>';
 tableLoad +='<th>User Info</th>';
@@ -44,42 +57,38 @@ tableLoad +='</thead>';
 tableLoad +='<tbody>';
 
 for(let i = 0; i< orders.length;i++){
-    const orderId= orders[i].id;
-    const transactionId= orders[i].transaction_id;
-    const userId= orders[i].user_id;
-    const createdAt= orders[i].created_at;
-    const totalPay= orders[i].total;
-    const cardNumber= orders[i].card_number;
-    const cardType = orders[i].card_type;
-    const orderCountry = orders[i].order_country;
-    const orderIp = orders[i].order_ip;
+
+    const orderId= Number(orders[i].id);
+    const transactionId= String(orders[i].transaction_id);
+    const userId= Number(orders[i].user_id);
+    const createdAt= String(orders[i].created_at);
+    const totalPay= parseFloat(orders[i].total);
+    const cardNumber= String(orders[i].card_number);
+    const cardType = String(orders[i].card_type);
+    const orderCountry = String(orders[i].order_country);
+    const orderIp = String(orders[i].order_ip);
+    let clickId = "demo"+orderId;
 
     tableLoad +='<tr id="order_'+orderId+'">';
     tableLoad +="<td>"+transactionId+"</td>";
-    tableLoad +='<td class="user_data">'+userId+'</td>';
+    tableLoad +='<td class="user_data">' +
+        '<a onclick="change('+clickId+')" href="#" >'+userId+'</a> ' +
+        '<div style="display:none" id="demo'+orderId+'" class="user-details"> ' +
+        '<p>Birthday: 01/02/1991</p>' +
+        '<p><img src="" width="100px"></p>' +
+        '<p>Company: <a href="http://awesome.website">Bumbershoot Corp.</a></p>' +
+        '<p>Industry: Apparel / Consumer Services</p>' +
+        '</div></td>';
     tableLoad +='<td>'+timeConverter(createdAt)+'</td>';
     tableLoad +='<td>$'+totalPay+'</td>';
     tableLoad +='<td>'+starConverter(cardNumber)+'</td>';
     tableLoad +='<td>'+cardType+'</td>';
     tableLoad +='<td>'+orderCountry +' ('+orderIp+')</td>';
-
-
     tableLoad +='</tr>';
 }
-
 tableLoad +='</tbody>';
+tableLoad +='</table>';
 
-document.getElementById('table').innerHTML = "" + tableLoad + " <br>";
-
-export default (function () {
-    // YOUR CODE GOES HERE
-    // next line is for example only
-    //document.getElementById("app").innerHTML = "<h1>Hello WG Forge</h1>";
-    // for(let i = 1; i <= 10; i++) {
-    //     document.getElementById('table').innerHTML += "" + i + " <br>";
-    // }
+document.getElementById('app').innerHTML = "" + tableLoad + " <br>";
 }());
-
-
-
 
