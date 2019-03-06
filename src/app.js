@@ -33,41 +33,34 @@ function starConverter(str) {
 function pad(n) {
     return n < 10 ? '0' + n : n;
 }
-function median(data) {
-    var count = 0;
-    data.sort((a, b) => a - b);
-    do {
-        data.pop();
-        data.shift();
-    } while (data.length > 2)
-    {
 
-        if (data.length === 2) {
-            for (var j = 0; j < data.length; j++) {
-                count = (data[0] + data[1]);
-                return count / 2;
-            }
-        }
-    }
-    return data[0];
+function median1(values) {
+    values.sort(function (a, b) {
+        return a - b;
+    });
+    let half = Math.floor(values.length / 2);
+    if (values.length % 2) return values[half]; else return (values[half - 1] + values[half]) / 2.0;
 }
+
+let list1= []; // массив
 
 
 
 export default (function () {
     let tableLoad= '<table id="grid" class="table"><thead>';
+    tableLoad +='<tr> <th>Search:</th> <th colspan="6"><input type="text" id="search" onkeyup="tableSearch()"></th> </tr>';
     tableLoad +='<tr>';
-    tableLoad +='<th data-type="string">Transaction ID</th>';
-    tableLoad +='<th  data-type="name">User Info</th>';
-    tableLoad +='<th data-type="date">Order Date</th>';
-    tableLoad +='<th data-type="number">Order Amount</th>';
+    tableLoad +='<th data-name="Transaction ID" data-type="string" >Transaction ID</th>';
+    tableLoad +='<th data-name="User Info" data-type="name">User Info</th>';
+    tableLoad +='<th data-name="Order Date" data-type="date">Order Date</th>';
+    tableLoad +='<th data-name="Order Amount<" data-type="number">Order Amount</th>';
     tableLoad +='<th>Card Number</th>';
-    tableLoad +='<th data-type="string">Card Type</th>';
-    tableLoad +='<th data-type="string">Location</th>';
+    tableLoad +='<th data-name="Card Type" data-type="string">Card Type</th>';
+    tableLoad +='<th data-name="Location" data-type="string">Location</th>';
     tableLoad +='</tr>';
+    tableLoad +='<tr class="no-result"> <td>Nothing found</td> </tr>';
     tableLoad +='</thead>';
     tableLoad +='<tbody>';
-
     // make an associative array of users to search by ID
     let usersById = {};
     for(let i = 0; i < users.length; i++) {
@@ -80,31 +73,37 @@ export default (function () {
     }
     // make an associative array of users to search by ID
     let ordersById = {};
-    let sum=0;
+    let orderCount = 0;
+    let sum = 0;
+    let summ = 0;
+    let sumF =0;
     for(let i = 0; i < orders.length; i++) {
         ordersById[orders[i].total] = orders[i];
      }
 
     for(let i = 0; i< orders.length;i++){
-        const orderId= Number(orders[i].id);
+        const orderId= Number(orders[i].id); // переменная для заказов
         const transactionId= String(orders[i].transaction_id);
         const userId= Number(orders[i].user_id);
         const createdAt= String(orders[i].created_at);
         const totalPay= parseFloat(orders[i].total);
+        list1.push(parseFloat(orders[i].total)); // передаем в массив значения
         const cardNumber= String(orders[i].card_number);
         const cardType = String(orders[i].card_type);
         const orderCountry = String(orders[i].order_country);
         const orderIp = String(orders[i].order_ip);
         let clickId = "demo"+orderId;
         let user = (typeof usersById[userId] !== 'undefined') ? usersById[userId] : null;
+        let userMale = (user.gender === "Male")? summ++: '';
+        let userFemale = (user.gender === "Female")? sumF++: '';
         let company = user.company_id && (typeof companyById[user.company_id] !== 'undefined') ? companyById[user.company_id] : null;
         let birthday = new Date(user.birthday * 1000);
         let bdate = birthday.getDate();
         let bmonth = birthday.getMonth();
         let byear = birthday.getFullYear();
         let beIndustry = (company?'Industry:'+ company.industry : null);
-        sum+=totalPay;
-        if (user) {
+        sum+=totalPay; // считаем сумму заказов
+         if (user) {
             tableLoad += '<tr id="order_' + orderId + '">';
             tableLoad += "<td>" + transactionId + "</td>";
             tableLoad += '<td class="user_data" data-name="'+user.first_name + ' ' + user.last_name+'">' +
@@ -123,35 +122,42 @@ export default (function () {
             tableLoad += '</tr>';
 
         }
+        orderCount++;
     }
+    tableLoad +='</tbody>';
+    tableLoad +='</table>';
+    let averCheck = (sum / orderCount); // получаем средий чек
+    console.log(summ);
+    tableLoad +='<table class="table">';
+    tableLoad +='<tbody>';
     tableLoad +='<tr>' +
-        '<td>Orders Count</td>' +
-        '<td>'+orders.length+'</td>' +
+        '<th>Orders Count</th>' +
+        '<td>'+orderCount+'</td>' +
         '<td colspan="5">&nbsp;</td>' +
         '</tr>';
     tableLoad +='<tr>' +
-        '<td>Orders Total</td>' +
+        '<th>Orders Total</th>' +
         '<td>$'+sum+'</td>' +
         '<td colspan="5">&nbsp;</td>' +
         '</tr>';
     tableLoad +='<tr>' +
-        '<td>Median Value</td>' +
-        '<td></td>' +
+        '<th>Median Value</th>' +
+        '<td>$'+median1(list1)+'</td>' +
         '<td colspan="5">&nbsp;</td>' +
         '</tr>';
     tableLoad +='<tr>' +
-        '<td>Average Check</td>' +
-        '<td>2</td>' +
+        '<th>Average Check</th>' +
+        '<td>$'+averCheck+'</td>' +
         '<td colspan="5">&nbsp;</td>' +
         '</tr>';
     tableLoad +='<tr>' +
-        '<td>Average Check (Female)</td>' +
-        '<td>2</td>' +
+        '<th>Average Check (Female)</th>' +
+        '<td>'+sumF+'</td>' +
         '<td colspan="5">&nbsp;</td>' +
         '</tr>';
     tableLoad +='<tr>' +
-        '<td>Average Check (Male)</td>' +
-        '<td>2</td>' +
+        '<th>Average Check (Male)</th>' +
+        '<td>'+summ+'</td>' +
         '<td colspan="5">&nbsp;</td>' +
         '</tr>';
     tableLoad +='</tbody>';

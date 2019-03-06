@@ -4,15 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <title>WG Forge Test</title>
-    <style>
-        th {
-            cursor: pointer;
-        }
-
-        th:hover {
-            background: yellow;
-        }
-    </style>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script>
         function change(idName) {
@@ -23,7 +14,6 @@
             }
             return false;
         }
-
         // сортировка таблицы
         // использовать делегирование!
         // должно быть масштабируемо:
@@ -46,22 +36,22 @@
                 switch (type) {
                     case 'number':
                         compare = function (rowA, rowB) {
-                            var a = parseFloat(rowA.cells[colNum].innerHTML.replace('$', ''));
-                            var b = parseFloat(rowB.cells[colNum].innerHTML.replace('$', ''));
+                            let a = parseFloat(rowA.cells[colNum].innerHTML.replace('$', ''));
+                            let b = parseFloat(rowB.cells[colNum].innerHTML.replace('$', ''));
                             return a - b;
                         };
                         break;
                     case 'string':
                         compare = function (rowA, rowB) {
-                            var a = rowA.cells[colNum].innerHTML;
-                            var b = rowB.cells[colNum].innerHTML;
+                            let a = rowA.cells[colNum].innerHTML;
+                            let b = rowB.cells[colNum].innerHTML;
                             return a.localeCompare(b);
                         };
                         break;
                     case 'name':
                         compare = function (rowA, rowB) {
-                            var a = rowA.cells[colNum].getAttribute('data-name').replace('Mr. ', '').replace('Ms. ', '');
-                            var b = rowB.cells[colNum].getAttribute('data-name').replace('Mr. ', '').replace('Ms. ', '');
+                            let a = rowA.cells[colNum].getAttribute('data-name').replace('Mr. ', '').replace('Ms. ', '');
+                            let b = rowB.cells[colNum].getAttribute('data-name').replace('Mr. ', '').replace('Ms. ', '');
                             return a.localeCompare(b);
                         };
                         break;
@@ -80,11 +70,38 @@
 
             }
         }
+
     </script>
 </head>
 <body>
 <div id="app"></div>
+<script>
+    // window.onload = function() {
+    //     let beNores = document.getElementsByClassName("no-result");
+    //     beNores[0].style.display = "none";
+    // };
+    function tableSearch() {
+        let phrase = document.getElementById('search');
+        let table = document.getElementById('grid');
+        let regPhrase = new RegExp(phrase.value, 'i');
+        let flag = false;
 
+        for (let i = 3; i < table.rows.length; i++) {
+            flag = false;
+            for (let j = table.rows[i].cells.length - 1; j >= 0; j--) {
+                flag = regPhrase.test(table.rows[i].cells[j].innerHTML);
+                 if (flag) break;
+            }
+            if (flag) {
+                table.rows[i].style.display = "";
+            } else {
+                table.rows[i].style.display = "none";
+            }
+
+        }
+    }
+
+</script>
 
 </body>
 </html>
