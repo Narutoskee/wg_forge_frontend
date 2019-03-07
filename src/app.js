@@ -1,6 +1,6 @@
 import orders from '../data/orders.json'; //  import orders data from json
 import users from '../data/users.json'; // import users data from json
-import companies from '../data/companies.json'; // import users data from json
+import companies from '../data/companies.json'; // import companies data from json
 
 function timeConverter(UNIX_timestamp) {
     let a = new Date(UNIX_timestamp * 1000);
@@ -42,13 +42,15 @@ function median1(values) {
     if (values.length % 2) return values[half]; else return (values[half - 1] + values[half]) / 2.0;
 }
 
+function roundTwo(num) {
+    return Math.round(parseFloat(num)*1000)/1000;
+}
+
 let list1= []; // массив
 
-
-
 export default (function () {
-    let tableLoad= '<table id="grid" class="table"><thead>';
-    tableLoad +='<tr> <th>Search:</th> <th colspan="6"><input type="text" id="search" onkeyup="tableSearch()"></th> </tr>';
+    let tableLoad= '<table id="grid" class="table table-bordered table-hover"><thead class="thead-dark">';
+    tableLoad +='<tr> <th>Search:</th> <th colspan="6"><input type="text" id="search" value="" onkeyup="tableSearch()"></th> </tr>';
     tableLoad +='<tr>';
     tableLoad +='<th data-name="Transaction ID" data-type="string" >Transaction ID</th>';
     tableLoad +='<th data-name="User Info" data-type="name">User Info</th>';
@@ -73,36 +75,35 @@ export default (function () {
     }
     // make an associative array of users to search by ID
     let ordersById = {};
-    let orderCount = 0;
-    let sum = 0;
-    let summ = 0;
-    let sumF =0;
     for(let i = 0; i < orders.length; i++) {
         ordersById[orders[i].total] = orders[i];
-     }
+    }
+    let orderCount = 0;
+    let sum = 0;
+    let sumAverCheckMale = 0;
+    let sumAverCheckFemale =0;
 
     for(let i = 0; i< orders.length;i++){
         const orderId= Number(orders[i].id); // переменная для заказов
         const transactionId= String(orders[i].transaction_id);
         const userId= Number(orders[i].user_id);
         const createdAt= String(orders[i].created_at);
-        const totalPay= parseFloat(orders[i].total);
-        list1.push(parseFloat(orders[i].total)); // передаем в массив значения
+        let totalPay= Math.round(parseFloat(orders[i].total)*1000)/1000;
+         list1.push(totalPay); // передаем в массив значения
         const cardNumber= String(orders[i].card_number);
         const cardType = String(orders[i].card_type);
         const orderCountry = String(orders[i].order_country);
         const orderIp = String(orders[i].order_ip);
         let clickId = "demo"+orderId;
         let user = (typeof usersById[userId] !== 'undefined') ? usersById[userId] : null;
-        let userMale = (user.gender === "Male")? summ++: '';
-        let userFemale = (user.gender === "Female")? sumF++: '';
+
         let company = user.company_id && (typeof companyById[user.company_id] !== 'undefined') ? companyById[user.company_id] : null;
         let birthday = new Date(user.birthday * 1000);
         let bdate = birthday.getDate();
         let bmonth = birthday.getMonth();
         let byear = birthday.getFullYear();
         let beIndustry = (company?'Industry:'+ company.industry : null);
-        sum+=totalPay; // считаем сумму заказов
+
          if (user) {
             tableLoad += '<tr id="order_' + orderId + '">';
             tableLoad += "<td>" + transactionId + "</td>";
@@ -120,24 +121,31 @@ export default (function () {
             tableLoad += '<td>' + cardType + '</td>';
             tableLoad += '<td>' + orderCountry + ' (' + orderIp + ')</td>';
             tableLoad += '</tr>';
-
+             orderCount++;
+             sum+=totalPay; // считаем сумму заказов
+             if(user.gender === "Male"){
+                 sumAverCheckMale++
+             }
+             else if(user.gender === "Female"){
+                 sumAverCheckFemale++
+             }
         }
-        orderCount++;
+
     }
     tableLoad +='</tbody>';
     tableLoad +='</table>';
+
     let averCheck = (sum / orderCount); // получаем средий чек
-    console.log(summ);
     tableLoad +='<table class="table">';
     tableLoad +='<tbody>';
     tableLoad +='<tr>' +
         '<th>Orders Count</th>' +
-        '<td>'+orderCount+'</td>' +
+        '<td>'+ orderCount+'</td>' +
         '<td colspan="5">&nbsp;</td>' +
         '</tr>';
     tableLoad +='<tr>' +
         '<th>Orders Total</th>' +
-        '<td>$'+sum+'</td>' +
+        '<td>$'+roundTwo(sum)+'</td>' +
         '<td colspan="5">&nbsp;</td>' +
         '</tr>';
     tableLoad +='<tr>' +
@@ -147,21 +155,22 @@ export default (function () {
         '</tr>';
     tableLoad +='<tr>' +
         '<th>Average Check</th>' +
-        '<td>$'+averCheck+'</td>' +
+        '<td>$'+roundTwo(averCheck)+'</td>' +
         '<td colspan="5">&nbsp;</td>' +
         '</tr>';
     tableLoad +='<tr>' +
         '<th>Average Check (Female)</th>' +
-        '<td>'+sumF+'</td>' +
+        '<td>'+sumAverCheckFemale+'</td>' +
         '<td colspan="5">&nbsp;</td>' +
         '</tr>';
     tableLoad +='<tr>' +
         '<th>Average Check (Male)</th>' +
-        '<td>'+summ+'</td>' +
+        '<td>'+sumAverCheckMale+'</td>' +
         '<td colspan="5">&nbsp;</td>' +
         '</tr>';
     tableLoad +='</tbody>';
     tableLoad +='</table>';
     document.getElementById('app').innerHTML = "" + tableLoad + " <br>";
 }());
+
 

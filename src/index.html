@@ -1,10 +1,18 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>WG Forge Test</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<style>
+    th[data-name] {
+        cursor: pointer;
+    }
+
+    th:hover {
+        background: yellow;
+    }
+</style>
     <script>
         function change(idName) {
             if (document.getElementById(idName).style.display === 'none') {
@@ -19,7 +27,6 @@
         // должно быть масштабируемо:
         // код работает без изменений при добавлении новых столбцов и строк
         window.onload = function() {
-
             let grid = document.getElementById('grid');
             grid.onclick = function (e) {
                 if (e.target.tagName.toLowerCase() !== 'th') return;
@@ -55,6 +62,13 @@
                             return a.localeCompare(b);
                         };
                         break;
+                    case 'date':
+                        compare = function (rowA, rowB) {
+                            let a = rowA.cells[colNum].innerHTML;
+                            let b = rowB.cells[colNum].innerHTML;
+                            return a.localeCompare(b);
+                        };
+                        break;
                 }
 
                 // сортировать
@@ -69,39 +83,34 @@
                 grid.appendChild(tbody);
 
             }
-        }
+        };
+        function tableSearch() {
+            let phrase = document.getElementById('search');
+            let table = document.getElementById('grid');
+            let regPhrase = new RegExp(phrase.value, 'i');
+            let flag = false;
 
+            for (let i = 3; i < table.rows.length; i++) {
+                flag = false;
+                for (let j = table.rows[i].cells.length - 1; j >= 0; j--) {
+                    flag = regPhrase.test(table.rows[i].cells[j].innerHTML);
+                    if (flag) break;
+                }
+                if (flag) {
+                    table.rows[i].style.display = "";
+
+
+                } else {
+                    table.rows[i].style.display = "none";
+
+                }
+
+            }
+        }
     </script>
 </head>
 <body>
 <div id="app"></div>
-<script>
-    // window.onload = function() {
-    //     let beNores = document.getElementsByClassName("no-result");
-    //     beNores[0].style.display = "none";
-    // };
-    function tableSearch() {
-        let phrase = document.getElementById('search');
-        let table = document.getElementById('grid');
-        let regPhrase = new RegExp(phrase.value, 'i');
-        let flag = false;
-
-        for (let i = 3; i < table.rows.length; i++) {
-            flag = false;
-            for (let j = table.rows[i].cells.length - 1; j >= 0; j--) {
-                flag = regPhrase.test(table.rows[i].cells[j].innerHTML);
-                 if (flag) break;
-            }
-            if (flag) {
-                table.rows[i].style.display = "";
-            } else {
-                table.rows[i].style.display = "none";
-            }
-
-        }
-    }
-
-</script>
 
 </body>
 </html>
