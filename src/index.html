@@ -27,6 +27,8 @@
         // должно быть масштабируемо:
         // код работает без изменений при добавлении новых столбцов и строк
         window.onload = function() {
+            let hide = document.getElementsByClassName('no-result');
+            hide.style.display = "none";
             let phraser = document.getElementById('search');
             let grid = document.getElementById('grid');
             grid.onclick = function (e) {
@@ -163,5 +165,4 @@
 
 </body>
 </html>
-</body>
-</html>
+
