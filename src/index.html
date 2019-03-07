@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <title>WG Forge Test</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-<style>
-    th[data-name] {
-        cursor: pointer;
-    }
+    <style>
+        th[data-name] {
+            cursor: pointer;
+        }
 
-    th:hover {
-        background: yellow;
-    }
-</style>
+        th:hover {
+            background: yellow;
+        }
+    </style>
     <script>
         function change(idName) {
             if (document.getElementById(idName).style.display === 'none') {
@@ -27,6 +27,7 @@
         // должно быть масштабируемо:
         // код работает без изменений при добавлении новых столбцов и строк
         window.onload = function() {
+            let phraser = document.getElementById('search');
             let grid = document.getElementById('grid');
             grid.onclick = function (e) {
                 if (e.target.tagName.toLowerCase() !== 'th') return;
@@ -88,7 +89,7 @@
             let phrase = document.getElementById('search');
             let table = document.getElementById('grid');
             let regPhrase = new RegExp(phrase.value, 'i');
-            let flag = false;
+            let flag = false, flagFound = false;
 
             for (let i = 3; i < table.rows.length; i++) {
                 flag = false;
@@ -97,20 +98,70 @@
                     if (flag) break;
                 }
                 if (flag) {
+                    flagFound = true;
                     table.rows[i].style.display = "";
-
-
                 } else {
                     table.rows[i].style.display = "none";
-
                 }
-
             }
+
+            // если не найден
+            document.getElementById('no-result').style.display = flagFound?"none":'';
+
+            // Обновляем статистику
+            updateStat();
         }
+
+        function updateStat() {
+            let table = document.getElementById('grid');
+            let orderCount = 0;
+            let totalPay = 0;
+            let sum = 0;
+            let sumAverCheckMale = 0;
+            let sumAverCheckFemale =0;
+            let list1= []; // массив
+
+            for (let i = 3; i < table.rows.length; i++) {
+                if (table.rows[i].style.display != "none") {
+                    orderCount++;
+                    totalPay = Math.round(parseFloat(table.rows[i].cells[3].innerHTML.replace('$', ''))*1000)/1000
+                    sum += totalPay;
+                    list1.push(totalPay);
+                    if(table.rows[i].cells[1].firstChild.innerHTML.indexOf('Mr.') === 0){
+                        sumAverCheckMale++;
+                    }
+                    else{
+                        sumAverCheckFemale++;
+                    }
+                }
+            }
+
+            document.getElementById('order_count').innerHTML = orderCount;
+            document.getElementById('orders_total').innerHTML = '$'+roundTwo(sum);
+            document.getElementById('median').innerHTML = '$'+roundTwo(median1(list1));
+            document.getElementById('average_check').innerHTML = '$'+roundTwo(sum / orderCount);
+            document.getElementById('sumAverCheckFemale').innerHTML = sumAverCheckFemale;
+            document.getElementById('sumAverCheckMale').innerHTML = sumAverCheckMale;
+        }
+
+        function median1(values) {
+            values.sort(function (a, b) {
+                return a - b;
+            });
+            let half = Math.floor(values.length / 2);
+            if (values.length % 2) return values[half]; else return (values[half - 1] + values[half]) / 2.0;
+        }
+
+        function roundTwo(num) {
+            return Math.round(parseFloat(num)*1000)/1000;
+        }
+
     </script>
 </head>
 <body>
 <div id="app"></div>
 
+</body>
+</html>
 </body>
 </html>
