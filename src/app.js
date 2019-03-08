@@ -55,7 +55,7 @@ export default (function () {
     tableLoad +='<th data-name="Transaction ID" data-type="string" >Transaction ID</th>';
     tableLoad +='<th data-name="User Info" data-type="name">User Info</th>';
     tableLoad +='<th data-name="Order Date" data-type="date">Order Date</th>';
-    tableLoad +='<th data-name="Order Amount<" data-type="number">Order Amount</th>';
+    tableLoad +='<th data-name="Order Amount" data-type="number">Order Amount</th>';
     tableLoad +='<th>Card Number</th>';
     tableLoad +='<th data-name="Card Type" data-type="string">Card Type</th>';
     tableLoad +='<th data-name="Location" data-type="string">Location</th>';
