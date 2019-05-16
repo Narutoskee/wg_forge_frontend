@@ -1,6 +1,11 @@
 import orders from '../data/orders.json'; //  import orders data from json
 import users from '../data/users.json'; // import users data from json
 import companies from '../data/companies.json'; // import companies data from json
+import jsonnnnnnn from '../data/jsonnnnnnn.json'; // import companies data from json
+
+    for (let x=0; x < jsonnnnnnn.length;x++){
+        console.log(jsonnnnnnn[x]);
+    }
 
 function timeConverter(UNIX_timestamp) {
     let a = new Date(UNIX_timestamp * 1000);
@@ -170,6 +175,7 @@ export default (function () {
         '</tr>';
     tableLoad +='</tbody>';
     tableLoad +='</table>';
+
     document.getElementById('app').innerHTML = "" + tableLoad + " <br>";
 }());
 
